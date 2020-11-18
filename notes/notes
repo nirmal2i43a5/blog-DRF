@@ -1,0 +1,8 @@
+https://github.com/codingforentrepreneurs/Blog-API-with-Django-Rest-Framework
+
+This is the api blog concept 
+Inside posts 
+
+    posts   
+        api              #make api folder
+            __init__.py     #it create new python module 
