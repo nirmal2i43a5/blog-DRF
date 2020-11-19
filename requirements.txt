@@ -5,10 +5,11 @@ django-crispy-forms==1.6.0
 django-filter==2.4.0
 django-js-asset==1.2.2
 django-markdown-deux==1.0.5
-djangorestframework==3.12.2
+djangorestframework==3.3.3
 importlib-metadata==2.0.0
 Markdown==3.3.3
 markdown2==2.3.1
+markdown2==2.3.10
 Pillow==8.0.1
 pkg-resources==0.0.0
 pytz==2020.4

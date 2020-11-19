@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     # third party
     'crispy_forms',
     'markdown_deux',#this is used to show the small content of large content in detail list
+    'pagedown',
     
     'ckeditor',
     
