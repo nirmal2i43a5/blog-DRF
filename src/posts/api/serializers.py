@@ -1,4 +1,8 @@
-from rest_framework.serializers import ModelSerializer,HyperlinkedIdentityField
+from rest_framework.serializers import (
+    ModelSerializer,
+    HyperlinkedIdentityField,
+    SerializerMethodField#use for showing username instead of id
+)
 from posts.models import Post
 
 
@@ -33,16 +37,17 @@ edit_detail_url = HyperlinkedIdentityField(
         view_name='posts-api:update',#where to go
         lookup_field = 'slug'##id is default but here we use slug
     )
-
-#create url in list(for hyperlink restframework doce inside relation serializers)
-class PostListSerializer(ModelSerializer):
-    #it shows link (I can also implement this in update and delete also acc to view_name)
-    url = HyperlinkedIdentityField(
+list_detail_url = HyperlinkedIdentityField(
         view_name='posts-api:detail',#where to go
         lookup_field = 'slug'##id is default but here we use slug
     )
-   
+#create url in list(for hyperlink restframework doce inside relation serializers)
+class PostListSerializer(ModelSerializer):
+    #it shows link (I can also implement this in update and delete also acc to view_name)
+    url = list_detail_url
     edit_url = edit_detail_url
+    user = SerializerMethodField()
+    
     class Meta:
         model = Post
         fields = (
@@ -56,7 +61,8 @@ class PostListSerializer(ModelSerializer):
             'edit_url'
             
         )
-        
+    def get_user(self,obj):#it shows username instead of id
+        return str(obj.user.username)
         
         
 class PostDetailSerializer(ModelSerializer):#I can also use PostListSerializer for detail also but it is better to make separate
@@ -65,15 +71,32 @@ class PostDetailSerializer(ModelSerializer):#I can also use PostListSerializer f
         view_name='posts-api:delete',#where to go
         lookup_field = 'slug'##id is default but here we use slug
     )
+    post = Post.objects.all()
+    user = SerializerMethodField()
+    image = SerializerMethodField()
     class Meta:
         model = Post
         fields = (
             'url',
+            'user',
             'id',
             'title',
             'slug',
             'content',
-            'publish'
+            'publish',
+            'image'
             
         )
         
+    def get_user(self,obj):#it shows username instead of id
+        return str(obj.user.username)
+    
+    def get_image(self,obj):#obj incorporate Post
+        #show image url
+        try:
+            return obj.image.url
+        except:
+            image = None
+        return image
+    
+    
