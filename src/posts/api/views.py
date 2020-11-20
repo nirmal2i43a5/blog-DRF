@@ -70,11 +70,13 @@ class PostListAPIView(ListAPIView):#this assists to see my data in json or api f
     
     #custom paginaiton which also shows pagination link directly check in pagination.py
     pagination_class = PostPageNumberPagination#it shows ?offset = 2 ...in url
-    pagination_class = PostLimitOffsetPagination#it shows ?page = 2..in url
+    
+    # pagination_class = PostLimitOffsetPagination#it shows ?page = 2..in url
     
     #if i use built in search like above then i dont need to write below code
     #result with builtin search ==> api/posts/?search=title   with below ?q=title ===  (I can also use both custom and builtin and results is api/posts/?search=title&q=title)
     #Using OrderingFilter we can use api/posts/?search=java&ordering=-id(decending order for -ve..I can also order with other fields like user,title---)
+   
    
     #for searching  
     def get_queryset(self, *args, **kwargs):
