@@ -92,4 +92,3 @@ class UserCreateSerializer(ModelSerializer):
         return validated_data
 
 
-
