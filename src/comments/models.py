@@ -1,10 +1,11 @@
-from __future__ import unicode_literals
+
 
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
 from django.core.urlresolvers import reverse
 from django.db import models
+# from posts.models import Post   I cannot import Post here as comment is also imported in post
 
 
 class CommentManager(models.Manager):
@@ -12,19 +13,25 @@ class CommentManager(models.Manager):
         qs = super(CommentManager, self).filter(parent=None)
         return qs
 
-    def filter_by_instance(self, instance):
-        content_type = ContentType.objects.get_for_model(instance.__class__)
+    def filter_by_instance(self, instance):#receive instance from comments decorator in this same page
+        content_type = ContentType.objects.get_for_model(instance.__class__)#writing Post model here is similar to instance.__class__ i.e Post = instance.__class__(using this for generic foreign key)
+        #I am using instance.__class__ blc i cannot import Post from post model as comment is also imported in comment post model
         obj_id = instance.id
-        qs = super(CommentManager, self).filter(content_type=content_type, object_id= obj_id).filter(parent=None)
+        qs = super(CommentManager, self).filter(content_type=content_type, object_id= obj_id).filter(parent=None)#parent is used for reply logic
+        #super(CommentManager, self) means Comment.objects
         return qs
 
 class Comment(models.Model):
     user        = models.ForeignKey(settings.AUTH_USER_MODEL, default=1, on_delete=models.CASCADE)
-    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
+    
+    # post = models.ForeignKey(Post)#instead of using this models(which only deals with Post models) I am using generic key to make it more effective
+    
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)#it deals with multiple models 
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
-    parent      = models.ForeignKey("self", null=True, blank=True,on_delete=models.CASCADE)
-
+    
+    parent      = models.ForeignKey("self", null=True, blank=True,on_delete=models.CASCADE)#i need this only when i reply the comment otherwise for just comment it is not used
+    #i see parent data in admin site only when i reply to particular comment
     content     = models.TextField()
     timestamp   = models.DateTimeField(auto_now_add=True)
 
@@ -34,8 +41,6 @@ class Comment(models.Model):
         ordering = ['-timestamp']
 
 
-    def __unicode__(self):  
-        return str(self.user.username)
 
     def __str__(self):
         return str(self.user.username)

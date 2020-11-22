@@ -151,6 +151,8 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), "media_cdn")
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
+
+
 LOGIN_URL = "/login/"
 
 ROOT_URLCONF = 'blog.urls'

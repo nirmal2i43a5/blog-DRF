@@ -1,4 +1,3 @@
-from __future__ import unicode_literals
 
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
@@ -19,10 +18,11 @@ from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 
 
-
 class PostManager(models.Manager):
+    
     def active(self, *args, **kwargs):
-        # Post.objects.all() = super(PostManager, self).all()
+        
+        # Post.objects.all() is similar to  super(PostManager, self).all()
         return super(PostManager, self).filter(draft=False).filter(publish__lte=timezone.now())
 
 
@@ -48,8 +48,6 @@ class Post(models.Model):
 
     objects = PostManager()
 
-    def __unicode__(self):
-        return self.title
 
     def __str__(self):
         return self.title
@@ -65,6 +63,7 @@ class Post(models.Model):
         markdown_text = markdown(content)
         return mark_safe(markdown_text)
 
+
     @property
     def comments(self):
         instance = self
@@ -74,8 +73,14 @@ class Post(models.Model):
     @property
     def get_content_type(self):
         instance = self
+        # print(instance,"-----------")
         content_type = ContentType.objects.get_for_model(instance.__class__)
         return content_type
+
+
+
+
+
 
 
 def create_slug(instance, new_slug=None):
@@ -95,11 +100,12 @@ def pre_save_post_receiver(sender, instance, *args, **kwargs):
         instance.slug = create_slug(instance)
 
     if instance.content:
-        html_string = instance.get_markdown()
+        html_string = instance.get_markdown()#I can also directly use instance.content without markdown but text is not safe as it might sometimes show with html tags 
         read_time_var = get_read_time(html_string)
         instance.read_time = read_time_var
-
-
+                #(read_time) is the field here
+        
+        
 pre_save.connect(pre_save_post_receiver, sender=Post)
 
 

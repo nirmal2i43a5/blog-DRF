@@ -1,3 +1,4 @@
+#this page mainly concerns with the read_time concerning with the average reading speed of normal user
 import datetime
 import math
 import re
@@ -16,7 +17,7 @@ def count_words(html_string):
     return count
 
 
-def get_read_time(html_string):
+def get_read_time(html_string):#this html_string come from posts/models.py pre_save signals
     count = count_words(html_string)
     read_time_min = math.ceil(count/200.0) #assuming 200wpm reading
     # read_time_sec = read_time_min * 60

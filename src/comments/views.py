@@ -18,6 +18,7 @@ def comment_delete(request, id):
     except:
         raise Http404
 
+
     if obj.user != request.user:
         #messages.success(request, "You do not have permission to view this.")
         #raise Http404
@@ -36,6 +37,9 @@ def comment_delete(request, id):
     }
     return render(request, "confirm_delete.html", context)
 
+
+
+#thread is use to obtain the individual comment list
 def comment_thread(request, id):
     #obj = Comment.objects.get(id=id)
     try:
@@ -53,13 +57,22 @@ def comment_thread(request, id):
             "content_type": obj.content_type,
             "object_id": obj.object_id
     }
+    
     form = CommentForm(request.POST or None, initial=initial_data)
+    
     if form.is_valid() and request.user.is_authenticated():
         c_type = form.cleaned_data.get("content_type")
         content_type = ContentType.objects.get(model=c_type)
         obj_id = form.cleaned_data.get('object_id')
         content_data = form.cleaned_data.get("content")
         parent_obj = None
+	    
+        '''
+           i am using request.POST.get instead of form.cleaned_data for parent_id because
+            i dont use parent field in forms as it can create confusion in comment form 
+            and may give data with repetitive result as we have already set initial_data in CommentForm
+        '''
+        
         try:
             parent_id = int(request.POST.get("parent_id"))
         except:
@@ -67,16 +80,15 @@ def comment_thread(request, id):
 
         if parent_id:
             parent_qs = Comment.objects.filter(id=parent_id)
-            if parent_qs.exists() and parent_qs.count() == 1:
+            if parent_qs.exists() and parent_qs.count() == 1:#check in database and parent comment should always be one
                 parent_obj = parent_qs.first()
-
 
         new_comment, created = Comment.objects.get_or_create(
                             user = request.user,
                             content_type= content_type,
                             object_id = obj_id,
                             content = content_data,
-                            parent = parent_obj,
+                            parent = parent_obj,#using this for replying comment
                         )
         return HttpResponseRedirect(new_comment.content_object.get_absolute_url())
 
