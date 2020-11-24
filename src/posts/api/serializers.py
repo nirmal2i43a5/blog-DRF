@@ -4,8 +4,8 @@ from rest_framework.serializers import (
     SerializerMethodField#use for showing username instead of id
 )
 from posts.models import Post
-
-
+from comments.api.serializers import CommentSerializer 
+from comments.models import Comment
 class PostCreateUpdateSerializer(ModelSerializer):#use for both create and update
     class Meta:
         model = Post
@@ -74,6 +74,8 @@ class PostDetailSerializer(ModelSerializer):#I can also use PostListSerializer f
     post = Post.objects.all()
     user = SerializerMethodField()
     image = SerializerMethodField()
+  
+    comments = SerializerMethodField()
     class Meta:
         model = Post
         fields = (
@@ -84,7 +86,8 @@ class PostDetailSerializer(ModelSerializer):#I can also use PostListSerializer f
             'slug',
             'content',
             'publish',
-            'image'
+            'image',
+            'comments'
             
         )
         
@@ -98,5 +101,16 @@ class PostDetailSerializer(ModelSerializer):#I can also use PostListSerializer f
         except:
             image = None
         return image
-    
-    
+ 
+
+    def get_image(self, obj):
+        try:
+            image = obj.image.url
+        except:
+            image = None
+        return image
+
+    def get_comments(self, obj):
+        c_qs = Comment.objects.filter_by_instance(obj)
+        comments = CommentSerializer(c_qs, many=True).data
+        return comments

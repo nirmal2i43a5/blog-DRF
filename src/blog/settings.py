@@ -10,8 +10,8 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/1.9/ref/settings/
 """
 
-import os
 
+import os
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # BASE_DIR = "/Users/jmitch/desktop/blog/src/"
@@ -169,6 +169,25 @@ CKEDITOR_CONFIGS = {
 CKEDITOR_UPLOAD_PATH = "uploads/"
 
 
+#rest_framework settings
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': (
+        'rest_framework.renderers.JSONRenderer',
+        'rest_framework.renderers.BrowsableAPIRenderer',
+    ),
+    # 'DEFAULT_PARSER_CLASSES': (
+    #     'rest_framework.parsers.JSONParser',
+    # )
+    "DEFAULT_AUTHENTICATION_CLASSES": (
+         'rest_framework.authentication.SessionAuthentication',#it login as session user 
+        #  'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
+        #'rest_framework.authentication.BasicAuthentication'
 
+    ), 
+    "DEFAULT_PERMISSION_CLASSES": (
+        'rest_framework.permissions.IsAuthenticated',
+        #'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    )
+}
 
 

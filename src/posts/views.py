@@ -20,7 +20,7 @@ from urllib.parse import quote_plus #for sharing content
 
 
 
-@login_required
+# @login_required
 def post_create(request):
 	if not request.user.is_staff or not request.user.is_superuser:
 		raise Http404
@@ -132,6 +132,7 @@ def post_list(request):
 		queryset_list = Post.objects.all()
 	
 	query = request.GET.get("q")
+ 
 	if query:
 		queryset_list = queryset_list.filter(
 				Q(title__icontains=query)|

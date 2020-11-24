@@ -124,9 +124,12 @@ class UserLoginSerializer(ModelSerializer):
         user = User.objects.filter(Q(email=email)|
                                    Q(username=username)).distinct()
         
+        
+        
         # user = user.exclude(email__isnull=True).exclude(email__iexact='')#it excludes null email and give relevant output
         print(user)
         if user.exists() and user.count() == 1:
+            
             user_obj = user.first()#only one user obj so we set first
         else:
             raise ValidationError("The email/username is not valid")

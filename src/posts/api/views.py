@@ -28,6 +28,7 @@ from rest_framework.filters import (
 from rest_framework.pagination import PageNumberPagination,LimitOffsetPagination
 
 from .pagination import PostLimitOffsetPagination,PostPageNumberPagination
+
 class PostCreateAPIView(CreateAPIView):#this assists to see my data in json or api format 
     queryset = Post.objects.all()
     serializer_class = PostCreateUpdateSerializer

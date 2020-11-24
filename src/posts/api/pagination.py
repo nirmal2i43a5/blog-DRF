@@ -13,5 +13,5 @@ class PostLimitOffsetPagination(LimitOffsetPagination):#using this shows ?offset
 
 
 class PostPageNumberPagination(PageNumberPagination):#using this shows ?page=(pageno)  i.e ?page = 2 ---which is akin to my blog
-    page_size = 2
+    page_size = 20
     

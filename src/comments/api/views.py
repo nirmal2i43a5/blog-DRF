@@ -39,29 +39,42 @@ from .serializers import (
 
 
 class CommentCreateAPIView(CreateAPIView):
-    queryset = Comment.objects.all()
-    #serializer_class = PostCreateUpdateSerializer
-    # permission_classes = [IsAuthenticated]
+    print("-----------------5--------------------")
 
-    def get_serializer_class(self):
-        model_type = self.request.GET.get("type")
+    queryset = Comment.objects.all()#call this call function in  comments/models.py
+    
+   # # for creating use url like => api/comments/create/?type=post&slug=python as we are retrieving value for particular type and slug
+    def get_serializer_class(self):#this assists us to use create_comment_serializer
+        
+        #this model_type,slug,and parent_id is used in create url (this is for settings the informaiton in url but we set content only when post )
+        
+        model_type = self.request.GET.get("type")#ile post in this case create_comment_serializer from serializers
         slug = self.request.GET.get("slug")
         parent_id = self.request.GET.get("parent_id", None)
+        
+        print("-----------------1--------------------")
+        
+        #call function in serializers that sets the model_type,slug,and parent_id 
         return create_comment_serializer(
                 model_type=model_type, 
                 slug=slug, 
                 parent_id=parent_id,
                 user=self.request.user
                 )
+   
 
     # def perform_create(self, serializer):
     #     serializer.save(user=self.request.user)
 
 
+#this is for thread and retrieve details
 class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView):
     queryset = Comment.objects.filter(id__gte=0)
+    
     serializer_class = CommentDetailSerializer
-    permission_classes = [IsOwnerOrReadOnly]
+    # permission_classes = [IsAuthenticatedOrReadOnly,IsOwnerOrReadOnly]#IsOwnerOrReadOnly is in posts/api/permission.py
+    
+    
 
     def put(self, request, *args, **kwargs):
         return self.update(request, *args, **kwargs)
@@ -71,31 +84,13 @@ class CommentDetailAPIView(DestroyModelMixin, UpdateModelMixin, RetrieveAPIView)
 
 
 
-# class PostUpdateAPIView(RetrieveUpdateAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostCreateUpdateSerializer
-#     lookup_field = 'slug'
-#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-#     #lookup_url_kwarg = "abc"
-#     def perform_update(self, serializer):
-#         serializer.save(user=self.request.user)
-#         #email send_email
-
-
-
-# class PostDeleteAPIView(DestroyAPIView):
-#     queryset = Post.objects.all()
-#     serializer_class = PostDetailSerializer
-#     lookup_field = 'slug'
-#     permission_classes = [IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
-#     #lookup_url_kwarg = "abc"
-
 
 class CommentListAPIView(ListAPIView):
     serializer_class = CommentListSerializer
     permission_classes = [AllowAny]
     filter_backends= [SearchFilter, OrderingFilter]
     search_fields = ['content', 'user__first_name']
+    
     pagination_class = PostPageNumberPagination #PageNumberPagination
 
     def get_queryset(self, *args, **kwargs):
