@@ -26,8 +26,13 @@ class PostManager(models.Manager):
         return super(PostManager, self).filter(draft=False).filter(publish__lte=timezone.now())
 
 
+
 class Post(models.Model):
+    #associate post with particular user i.e different staff in the office can create different post and it show username for the post they have created
+    #AUTH_USER_MODEL is the default user model
+    #default = 1 means for first user ie.admin ,superadmin,user
     user = models.ForeignKey(settings.AUTH_USER_MODEL, default=1)
+    
     title = models.CharField(max_length=120)
     slug = models.SlugField(unique=True)
     image = models.ImageField(upload_to='Images', 
@@ -40,7 +45,7 @@ class Post(models.Model):
     
     content = RichTextUploadingField(null=True,blank=True)
     
-    draft = models.BooleanField(default=False)
+    draft = models.BooleanField(default=False)#true means post is not ready to publish i.e admin and staff can only see this and publish it later
     publish = models.DateField(auto_now=False, auto_now_add=False)
     read_time =  models.IntegerField(default=0) # models.TimeField(null=True, blank=True) #assume minutes
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
@@ -55,6 +60,8 @@ class Post(models.Model):
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"slug": self.slug})
 
+    def get_api_url(self):
+        return reverse("posts-api:detail", kwargs={"slug": self.slug})
     class Meta:
         ordering = ["-timestamp", "-updated"]
 
