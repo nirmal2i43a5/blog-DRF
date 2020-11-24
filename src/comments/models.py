@@ -21,23 +21,31 @@ class CommentManager(models.Manager):
         #super(CommentManager, self) means Comment.objects
         return qs
     
-    #this is for comment serializers
+    #this is for comment serializers  using this inside CommentCreateSerializer  
     def create_by_model_type(self, model_type, slug, content, user, parent_obj=None):
+        print("-----------------4--------------------")
         model_qs = ContentType.objects.filter(model=model_type)
         if model_qs.exists():
             SomeModel = model_qs.first().model_class()
             obj_qs = SomeModel.objects.filter(slug=slug)
+
+            #obj_qs has to deals with where the comment is going but it is not comment itself
             if obj_qs.exists() and obj_qs.count() == 1:
-                instance = self.model()
+                print(self.model(),"---------------- ") # admin
+                instance = self.model()#making instance of Comment model
+                
+              
                 instance.content = content
                 instance.user = user
+                
                 instance.content_type = model_qs.first()
                 instance.object_id = obj_qs.first().id
                 if parent_obj:
                     instance.parent = parent_obj
                 instance.save()
                 return instance
-        return None
+            
+        return None#if statement fails
 
     
       #this logic is for rest api
