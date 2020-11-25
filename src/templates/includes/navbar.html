@@ -1,0 +1,38 @@
+<nav class="navbar navbar-expand-lg navbar-light bg-light mt-2">
+            
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarTogglerDemo01"
+        aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+
+        <a class="navbar-brand" href='{% url "posts:list" %}'>Home</a>
+
+    
+
+        <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
+
+
+            {% if not request.user.is_authenticated %}
+            <li class='float-right ml-2'>
+
+                {% block post_detail_link %}
+                <!--this is for title in-->
+                {% endblock %}
+
+            </li>
+            <li class='ml-2'><a href='{% url "register" %}'>Register</a></li>
+            <li class='ml-2'><a href='{% url "login" %}'>Login</a></li>
+            {% else %}
+            <li ><a href='{% url "logout" %}'>Logout</a></li>
+            {% endif %}
+        </ul>
+
+
+    
+
+       
+        
+    </div>
+</nav>

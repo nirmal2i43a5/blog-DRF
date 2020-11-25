@@ -26,8 +26,8 @@ def post_create(request):
 		raise Http404
 
 	form = PostForm()
+
  
-	# print(form.media)
 	if request.method == 'POST':
 		form = PostForm(request.POST or None, request.FILES or None)
 		if form.is_valid():

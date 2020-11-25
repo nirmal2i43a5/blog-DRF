@@ -17,7 +17,7 @@ from .utils import get_read_time
 from ckeditor.fields import RichTextField
 from ckeditor_uploader.fields import RichTextUploadingField
 
-
+from PIL import Image
 class PostManager(models.Manager):
     
     def active(self, *args, **kwargs):
@@ -56,6 +56,16 @@ class Post(models.Model):
 
     def __str__(self):
         return self.title
+    
+    def save(self):
+        super().save()
+
+        img = Image.open(self.image.path)
+
+        if img.height > 300 or img.width > 300:
+            output_size = (300, 300)
+            img.thumbnail(output_size)
+            img.save(self.image.path)
 
     def get_absolute_url(self):
         return reverse("posts:detail", kwargs={"slug": self.slug})

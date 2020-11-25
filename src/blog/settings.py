@@ -161,10 +161,12 @@ ROOT_URLCONF = 'blog.urls'
 CKEDITOR_CONFIGS = {
     'default': {
         'toolbar': 'full',
-        'height': 300,
-        'width': 1200,
+        'height': 200,
+        'width':500,
     },
 }
+
+
 
 CKEDITOR_UPLOAD_PATH = "uploads/"
 

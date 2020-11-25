@@ -20,5 +20,3 @@ class PostForm(forms.ModelForm):
             "publish",
         ]
 
-
-  
