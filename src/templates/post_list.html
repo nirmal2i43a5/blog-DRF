@@ -1,60 +1,66 @@
 {% extends "base.html" %}
 {% block content %}
+<br>
 
+    <form  method='GET' action='' class="form-inline my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search Posts.." name="q" value="{{ request.GET.q }}"aria-label="Search">
+            <button class="btn btn-info my-2 my-sm-0" type="submit">Search</button>
+        </form>
+<hr>
+<a href="/create/" class="btn btn-info  float-right">Add content</a>
+<h1>POSTS</h1><hr>
 
-<div class='col-sm-6 col-sm-offset-3'>
-    <h1>{{ title }}</h1>
-<form method='GET' action='' class='row'>
-        <div class='col-sm-6'>
-            <div class='input-group'>
-                <input class='form-control' type='text' name='q' placeholder='Search posts' value='{{ request.GET.q }}'/>
-                <span class='input-group-btn'>
-                    <!-- <input class='btn btn-default' type='submit' value='Search' /> -->
-                    <button class='btn btn-default' type='submit'>Search <i class="fa fa-search"></i></button>
-                </span>
-            </div>
-        </div>
-</form>
-<a href="/create/" class="btn btn-primary">Add content</a>
-
-{% for obj in object_list %}
 <div class="row">
-  <div class="col-sm-12">
-    <div class="thumbnail">
 
-        {% if obj.image %}
-         <img src='{{ obj.image.url }}' class='img-responsive' />
-        {% endif %}
+        {% for obj in object_list %}
 
+
+
+        <div class="col-md-4 mt-2">
+
+        <div class="card card">
+          
+            {% if obj.image %}
+            <img src='{{ obj.image.url }}' class='img-responsive'  />
+            {% endif %}
+
+            <div class="card-body">
+            
+              <p class="card-text">
+                {% if obj.draft %}<h3>Staff only: Draft</h3>{% endif %} {% if obj.publish > today %}<h3>Staff Only:
+                    Future Post</h3>{% endif %}
+
+                <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.publish }}</small></h3>
+
+                {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
+
+                {{ obj.content|safe|truncatechars_html:120 }}
+                <!--120 is the character to show-->
+                <!--This is small content seen in detail list page of each post-->
+
+                <!--obj.content|safe| is used to make html tag hide-->
+
+                <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
+              </p>
+            </div>
+            <div class="card-footer">
+              <small class="text-muted">Last updated 3 mins ago</small>
+            </div>
+          </div>
+
+        </div>
+        {% endfor %}
         
-      
-      <div class="caption post-detail-item">
 
-        {% if obj.draft %}<h3>Staff only: Draft</h3>{% endif %} {% if obj.publish > today %}<h3>Staff Only: Future Post</h3>{% endif %}
 
-        <h3><a href='{{ obj.get_absolute_url }}'>{{ obj.title }}</a> <small>{{ obj.publish }}</small></h3>
 
-        {% if obj.user.get_full_name %}<p>Author: {{ obj.user.get_full_name }}</p>{% endif %}
-
-        {{ obj.content|safe|truncatechars_html:120 }}<!--120 is the character to show--><!--This is small content seen in detail list page of each post-->
-
-        <!--obj.content|safe| is used to make html tag hide-->
-
-        <p><a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a></p>
-        
-      </div>
-
-    </div>
-  </div>
-<hr/>
 </div>
-{% endfor %}
-
 
 <div class="pagination">
     <span class="step-links">
         {% if object_list.has_previous %}
-            <a href="?{{ page_request_var }}={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+        <a
+            href="?{{ page_request_var }}={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
         {% endif %}
 
         <span class="current">
@@ -62,14 +68,14 @@
         </span>
 
         {% if object_list.has_next %}
-            <a href="?{{ page_request_var }}={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+        <a
+            href="?{{ page_request_var }}={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
         {% endif %}
     </span>
 </div>
 
 
-
-
-</div>
+    
+   
 
 {% endblock content %}
